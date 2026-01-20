@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Student Grievance System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+            colors: {
+              brandBlack: "#1d1d1f",
+              brandGray: "#f5f5f7",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* Glassmorphism Card Style */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Custom Input Styling */
+      .auth-input {
+        width: 100%;
+        background-color: #f3f4f6; /* gray-100 */
+        border: 1px solid transparent;
+        padding: 1rem 1.5rem;
+        border-radius: 9999px; /* full rounded */
+        font-size: 0.875rem; /* text-sm */
+        transition: all 0.2s;
+        outline: none;
+      }
+      .auth-input:focus {
+        background-color: #ffffff;
+        border-color: #e5e7eb;
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Animation for Form Switching */
+      .form-view {
+        transition: opacity 0.4s ease, transform 0.4s ease;
+      }
+      .hidden-view {
+        display: none;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      .active-view {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-brandGray min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+  >
+    <div
+      class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-50 rounded-full blur-3xl opacity-60 -z-10"
+    ></div>
+    <div
+      class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-orange-50 rounded-full blur-3xl opacity-60 -z-10"
+    ></div>
+
+    <div
+      class="glass-card w-full max-w-5xl h-[700px] rounded-[2.5rem] flex overflow-hidden shadow-2xl relative"
+    >
+      <div
+        class="hidden lg:flex w-1/2 bg-black text-white flex-col justify-between p-12 relative overflow-hidden"
+      >
+        <div
+          class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2"
+        ></div>
+
+        <a
+          href="index.html"
+          class="flex items-center gap-2 z-10 hover:opacity-80 transition"
+        >
+          <div
+            class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black font-bold text-xs"
+          >
+            G
+          </div>
+          <span class="font-semibold tracking-tight text-lg"
+            >/ Grievance.io</span
+          >
+        </a>
+
+        <div class="z-10 relative">
+          <h2 class="text-5xl font-serif leading-tight mb-6">
+            Your voice matters.<br />Let's fix it.
+          </h2>
+          <p class="text-gray-400 max-w-xs leading-relaxed">
+            Join 5,000+ students actively shaping a better campus environment
+            through transparent communication.
+          </p>
+        </div>
+
+        <div class="z-10 text-xs text-gray-500">
+          &copy; 2024 University Redressal System
+        </div>
+      </div>
+
+      <div
+        class="w-full lg:w-1/2 p-8 sm:p-12 flex flex-col justify-center relative bg-white/40"
+      >
+        <a
+          href="index.html"
+          class="absolute top-8 right-8 text-gray-400 hover:text-black transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </a>
+
+        <div class="flex justify-center mb-8 relative z-20">
+          <div class="bg-gray-100 p-1 rounded-full flex relative">
+            <input
+              type="radio"
+              name="role"
+              id="role-student"
+              value="student"
+              class="hidden"
+              checked
+            />
+            <input
+              type="radio"
+              name="role"
+              id="role-admin"
+              value="admin"
+              class="hidden"
+            />
+
+            <label
+              for="role-student"
+              id="lbl-student"
+              class="px-6 py-2 rounded-full text-sm font-medium cursor-pointer transition-all duration-300 text-black bg-white shadow-sm"
+            >
+              Student
+            </label>
+            <label
+              for="role-admin"
+              id="lbl-admin"
+              class="px-6 py-2 rounded-full text-sm font-medium cursor-pointer transition-all duration-300 text-gray-500 hover:text-black"
+            >
+              Admin
+            </label>
+          </div>
+        </div>
+
+        <div
+          id="view-login"
+          class="form-view active-view max-w-sm mx-auto w-full"
+        >
+          <div class="mb-6">
+            <h3 class="text-3xl font-serif text-brandBlack mb-2">
+              Welcome back
+            </h3>
+            <p class="text-gray-500 text-sm">
+              Please enter your details to sign in.
+            </p>
+          </div>
+
+          <form id="form-login" class="space-y-4">
+            <div>
+              <label
+                class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-3"
+                >Email</label
+              >
+              <input
+                type="email"
+                id="input-login-email"
+                placeholder="student@university.edu"
+                class="auth-input"
+              />
+            </div>
+
+            <div>
+              <label
+                class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-3"
+                >Password</label
+              >
+              <input
+                type="password"
+                id="input-login-password"
+                placeholder="••••••••"
+                class="auth-input"
+              />
+            </div>
+
+            <div class="flex justify-between items-center text-xs px-2">
+              <label
+                class="flex items-center gap-2 text-gray-500 cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  class="rounded border-gray-300 text-black focus:ring-black"
+                />
+                <span>Remember me</span>
+              </label>
+              <button
+                type="button"
+                id="btn-switch-forgot"
+                class="font-medium text-black hover:underline"
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              id="btn-login-submit"
+              class="w-full bg-black text-white py-3.5 rounded-full font-medium shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition transform duration-200 mt-2"
+            >
+              Sign in
+            </button>
+          </form>
+
+          <div class="flex items-center gap-3 my-6">
+            <div class="h-px bg-gray-300 flex-1"></div>
+            <span class="text-xs text-gray-400 font-medium">OR</span>
+            <div class="h-px bg-gray-300 flex-1"></div>
+          </div>
+
+          <button
+            type="button"
+            id="btn-login-google"
+            class="w-full bg-white border border-gray-300 text-gray-700 py-3.5 rounded-full font-medium shadow-sm hover:bg-gray-50 transition transform duration-200 flex items-center justify-center gap-3"
+          >
+            <svg
+              class="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M23.52 12.2727C23.52 11.4273 23.4455 10.6136 23.3045 9.81818H12V14.4545H18.4636C18.1818 15.9545 17.3273 17.2227 16.0364 18.0818V21.0955H19.9091C22.1727 19.0136 23.52 15.9273 23.52 12.2727Z"
+                fill="#4285F4"
+              />
+              <path
+                d="M12 24C15.24 24 17.9591 22.9227 19.9136 21.0955L16.0409 18.0818C14.9636 18.8045 13.5864 19.2273 12 19.2273C8.87273 19.2273 6.22727 17.1136 5.28182 14.2909H1.27727V17.3955C3.25 21.3136 7.30909 24 12 24Z"
+                fill="#34A853"
+              />
+              <path
+                d="M5.27727 14.2909C5.03636 13.5727 4.90909 12.8 4.90909 12C4.90909 11.2 5.03636 10.4273 5.27727 9.70909V6.60455H1.27727C0.463636 8.22273 0 10.0636 0 12C0 13.9364 0.463636 15.7773 1.27727 17.3955L5.27727 14.2909Z"
+                fill="#FBBC05"
+              />
+              <path
+                d="M12 4.77273C13.7636 4.77273 15.3409 5.37727 16.5864 6.56818L20.0136 3.14091C17.9545 1.22273 15.2364 0 12 0C7.30909 0 3.25 2.68636 1.27727 6.60455L5.27727 9.70909C6.22727 6.88636 8.87273 4.77273 12 4.77273Z"
+                fill="#EA4335"
+              />
+            </svg>
+            Continue with Google
+          </button>
+
+          <div class="mt-8 text-center text-sm text-gray-500">
+            Don't have an account?
+            <button
+              id="btn-switch-register"
+              class="font-bold text-black hover:underline"
+            >
+              Create account
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="view-register"
+          class="form-view hidden-view max-w-sm mx-auto w-full"
+        >
+          <div class="mb-4">
+            <h3 class="text-3xl font-serif text-brandBlack mb-2">
+              Create Account
+            </h3>
+            <p class="text-gray-500 text-sm">Start filing grievances today.</p>
+          </div>
+
+          <button
+            type="button"
+            id="btn-register-google"
+            class="w-full bg-white border border-gray-300 text-gray-700 py-3.5 rounded-full font-medium shadow-sm hover:bg-gray-50 transition transform duration-200 flex items-center justify-center gap-3 mb-4"
+          >
+            <svg
+              class="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M23.52 12.2727C23.52 11.4273 23.4455 10.6136 23.3045 9.81818H12V14.4545H18.4636C18.1818 15.9545 17.3273 17.2227 16.0364 18.0818V21.0955H19.9091C22.1727 19.0136 23.52 15.9273 23.52 12.2727Z"
+                fill="#4285F4"
+              />
+              <path
+                d="M12 24C15.24 24 17.9591 22.9227 19.9136 21.0955L16.0409 18.0818C14.9636 18.8045 13.5864 19.2273 12 19.2273C8.87273 19.2273 6.22727 17.1136 5.28182 14.2909H1.27727V17.3955C3.25 21.3136 7.30909 24 12 24Z"
+                fill="#34A853"
+              />
+              <path
+                d="M5.27727 14.2909C5.03636 13.5727 4.90909 12.8 4.90909 12C4.90909 11.2 5.03636 10.4273 5.27727 9.70909V6.60455H1.27727C0.463636 8.22273 0 10.0636 0 12C0 13.9364 0.463636 15.7773 1.27727 17.3955L5.27727 14.2909Z"
+                fill="#FBBC05"
+              />
+              <path
+                d="M12 4.77273C13.7636 4.77273 15.3409 5.37727 16.5864 6.56818L20.0136 3.14091C17.9545 1.22273 15.2364 0 12 0C7.30909 0 3.25 2.68636 1.27727 6.60455L5.27727 9.70909C6.22727 6.88636 8.87273 4.77273 12 4.77273Z"
+                fill="#EA4335"
+              />
+            </svg>
+            Sign up with Google
+          </button>
+
+          <div class="flex items-center gap-3 mb-4">
+            <div class="h-px bg-gray-300 flex-1"></div>
+            <span class="text-xs text-gray-400 font-medium">OR</span>
+            <div class="h-px bg-gray-300 flex-1"></div>
+          </div>
+
+          <form id="form-register" class="space-y-3">
+            <div>
+              <input
+                type="text"
+                id="input-register-fullname"
+                placeholder="Full Name"
+                class="auth-input"
+              />
+            </div>
+
+            <div>
+              <input
+                type="email"
+                id="input-register-email"
+                placeholder="University Email"
+                class="auth-input"
+              />
+            </div>
+
+            <div>
+              <input
+                type="text"
+                id="input-register-studentid"
+                placeholder="Student ID / Roll Number"
+                class="auth-input"
+              />
+            </div>
+
+            <div>
+              <input
+                type="tel"
+                id="input-register-phone"
+                placeholder="Phone Number"
+                class="auth-input"
+              />
+            </div>
+
+            <div>
+              <input
+                type="password"
+                id="input-register-password"
+                placeholder="Create Password"
+                class="auth-input"
+              />
+            </div>
+
+            <button
+              type="submit"
+              id="btn-register-submit"
+              class="w-full bg-black text-white py-3.5 rounded-full font-medium shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition transform duration-200 mt-2"
+            >
+              Create Account
+            </button>
+          </form>
+
+          <div class="mt-6 text-center text-sm text-gray-500">
+            Already a member?
+            <button
+              id="btn-switch-login"
+              class="font-bold text-black hover:underline"
+            >
+              Log in
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="view-forgot"
+          class="form-view hidden-view max-w-sm mx-auto w-full"
+        >
+          <div class="mb-8">
+            <div
+              class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 14l-1 1-1 1H6v-1l4-4 4-4H9a1 1 0 00-1-1 1 1 0 001-1 1 1 0 001-1 1 1 0 001-1z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-3xl font-serif text-brandBlack mb-2">
+              Reset Password
+            </h3>
+            <p class="text-gray-500 text-sm">
+              Enter your university email and we'll send you a link to reset your
+              password.
+            </p>
+          </div>
+
+          <form id="form-forgot" class="space-y-4">
+            <div>
+              <label
+                class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 ml-3"
+                >University Email</label
+              >
+              <input
+                type="email"
+                id="input-forgot-email"
+                placeholder="student@university.edu"
+                class="auth-input"
+              />
+            </div>
+
+            <button
+              type="submit"
+              id="btn-forgot-submit"
+              class="w-full bg-black text-white py-3.5 rounded-full font-medium shadow-lg hover:bg-gray-800 hover:scale-[1.02] transition transform duration-200 mt-4"
+            >
+              Send Reset Link
+            </button>
+          </form>
+
+          <div class="mt-8 text-center">
+            <button
+              id="btn-back-login"
+              class="text-sm font-medium text-gray-500 hover:text-black flex items-center justify-center gap-2 mx-auto"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              Back to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+        import API from '/js/api.js';
+        import Core from '/js/core.js'; // Helper for view switching if exportable, or redo view logic here locally as it's simple
+
+        // 1. View Switcher Logic (Local to Auth)
+        window.switchView = (viewName) => {
+            const loginView = document.getElementById("view-login");
+            const registerView = document.getElementById("view-register");
+            const forgotView = document.getElementById("view-forgot");
+            
+            [loginView, registerView, forgotView].forEach(el => {
+                el.classList.remove("active-view");
+                el.classList.add("hidden-view");
+                 setTimeout(() => { if (!el.classList.contains("active-view")) el.style.display = "none"; }, 400);
+            });
+
+            let target = viewName === "login" ? loginView : viewName === "register" ? registerView : forgotView;
+            if(target) {
+                target.style.display = "block";
+                setTimeout(() => { target.classList.remove("hidden-view"); target.classList.add("active-view"); }, 20);
+            }
+        };
+        
+        // Bind Buttons (since we removed inline onclicks)
+        document.getElementById('btn-switch-register').onclick = () => switchView('register');
+        document.getElementById('btn-switch-login').onclick = () => switchView('login');
+        document.getElementById('btn-back-login').onclick = () => switchView('login');
+        document.getElementById('btn-switch-forgot').onclick = () => switchView('forgot');
+
+
+        // 2. Role Selector Logic
+        const setRole = (role) => {
+             const lblStudent = document.getElementById("lbl-student");
+             const lblAdmin = document.getElementById("lbl-admin");
+             const studentIdField = document.getElementById("input-register-studentid").parentElement;
+
+             if (role === "student") {
+                lblStudent.classList.replace('text-gray-500', 'text-black');
+                lblStudent.classList.add('bg-white', 'shadow-sm');
+                lblAdmin.classList.replace('text-black', 'text-gray-500');
+                lblAdmin.classList.remove('bg-white', 'shadow-sm');
+                studentIdField.style.display = "block";
+            } else {
+                lblAdmin.classList.replace('text-gray-500', 'text-black');
+                lblAdmin.classList.add('bg-white', 'shadow-sm');
+                lblStudent.classList.replace('text-black', 'text-gray-500');
+                lblStudent.classList.remove('bg-white', 'shadow-sm');
+                studentIdField.style.display = "none";
+            }
+        };
+
+        // Bind Role Clicks
+        document.getElementById('lbl-student').onclick = () => setRole('student');
+        document.getElementById('lbl-admin').onclick = () => setRole('admin');
+
+        // 3. Login Logic
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('input-login-email').value;
+            const password = document.getElementById('input-login-password').value;
+            const role = document.getElementById('role-student').checked ? 'student' : 'admin'; // Visual only, API decides real role usually
+
+            const result = await API.login(email, password);
+            if (result.success) {
+                // Redirect based on role
+                const userPath = result.user.role === 'student' ? 'student_dashboard.html' : 
+                                 result.user.role === 'superadmin' ? 'superadmin.html' : 'normal_admin.html';
+                window.location.href = userPath;
+            } else {
+                alert(result.message);
+            }
+        });
+
+        // 4. Register Logic
+        document.getElementById('form-register').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Collect data...
+            const name = document.getElementById('input-register-fullname').value;
+            const email = document.getElementById('input-register-email').value;
+            const password = document.getElementById('input-register-password').value;
+            
+            const result = await API.register({ name, email, password });
+            if (result.success) {
+                alert("Account created! Redirecting...");
+                window.location.href = 'student_dashboard.html';
+            } else {
+                alert(result.message);
+            }
+        });
+
+    </script>
+    
+
+  </body>
+</html>
