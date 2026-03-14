@@ -3,11 +3,16 @@
  * Auto-detects: uses relative /api in production, localhost in dev
  */
 
+const envApiBaseUrl = (import.meta.env.VITE_API_BASE_URL || "")
+  .trim()
+  .replace(/\/+$/, "");
+
 const BASE_URL =
-  window.location.hostname === "localhost" ||
+  envApiBaseUrl ||
+  (window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1"
-    ? "https://grievance-backend-5s6p.onrender.com/"
-    : "/api";
+    ? "http://localhost:5000/api"
+    : "/api");
 
 // Base URL for uploaded file attachments (strips /api suffix)
 const UPLOADS_BASE = BASE_URL.replace("/api", "");
