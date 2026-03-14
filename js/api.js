@@ -6,7 +6,7 @@
 const BASE_URL =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1"
-    ? "http://localhost:5000/api"
+    ? "https://grievance-backend-5s6p.onrender.com/"
     : "/api";
 
 // Base URL for uploaded file attachments (strips /api suffix)
