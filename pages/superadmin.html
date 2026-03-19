@@ -427,33 +427,58 @@
       <!-- ── Escalated Issues ─────────────────────────────────────────────── -->
       <section id="view-escalated" class="view-section">
         <div class="glass-panel rounded-[2rem] p-8 bg-white min-h-[500px]">
-          <div class="flex justify-between items-center mb-6">
-            <div class="flex items-center gap-3">
-              <h2 class="text-xl font-serif font-bold">Escalated Queue</h2>
-              <span
-                id="escalated-badge"
-                class="bg-red-50 text-red-600 text-xs font-bold px-3 py-1 rounded-full border border-red-100"
-                >0 Active</span
-              >
+          <div class="mb-6 border-b border-gray-100 pb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+              <div class="flex items-center gap-3">
+                <h2 class="text-xl font-serif font-bold">Escalated Queue</h2>
+                <span
+                  id="escalated-badge"
+                  class="bg-red-50 text-red-600 text-xs font-bold px-3 py-1 rounded-full border border-red-100"
+                  >0 Active</span
+                >
+              </div>
+              <!-- Filter: escalated vs resolved -->
+              <div class="flex gap-2">
+                <button
+                  id="filter-escalated-btn"
+                  data-filter="Escalated"
+                  class="px-4 py-2 text-xs font-bold rounded-full bg-black text-white"
+                >
+                  Escalated
+                </button>
+                <button
+                  id="filter-resolved-btn"
+                  data-filter="Resolved"
+                  class="px-4 py-2 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+                >
+                  Resolved
+                </button>
+              </div>
             </div>
-            <!-- Filter: escalated vs resolved -->
-            <div class="flex gap-2">
-              <button
-                id="filter-escalated-btn"
-                data-filter="Escalated"
-                class="px-4 py-2 text-xs font-bold rounded-full bg-black text-white"
-              >
-                Escalated
-              </button>
-              <button
-                id="filter-resolved-btn"
-                data-filter="Resolved"
-                class="px-4 py-2 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
-              >
-                Resolved
-              </button>
+            
+            <div class="flex flex-wrap items-center gap-4">
+              <!-- Search bar -->
+              <div class="relative w-full sm:w-80">
+                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+                <input
+                  id="input-search-escalated-cases"
+                  type="text"
+                  placeholder="Search by ID"
+                  class="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 text-sm rounded-full outline-none focus:border-black transition"
+                />
+              </div>
+              <!-- Dept filter dropdown -->
+              <select id="dept-filter-escalated-select" class="bg-gray-50 border border-gray-200 text-sm rounded-full px-4 py-2 outline-none focus:border-black transition">
+                <option value="all">All Departments</option>
+                <option value="Academic Affairs">Academic Affairs</option>
+                <option value="Administration">Administration</option>
+                <option value="Facilities &amp; Infrastructure">Facilities &amp; Infrastructure</option>
+                <option value="IT &amp; Technical Support">IT &amp; Technical Support</option>
+                <option value="Student Welfare &amp; Discipline">Student Welfare &amp; Discipline</option>
+              </select>
             </div>
           </div>
+          <div class="overflow-x-auto w-full">
           <table class="w-full text-left text-sm text-gray-600">
             <thead
               class="text-xs uppercase font-bold text-gray-400 bg-gray-50/50"
@@ -470,23 +495,35 @@
               <tr><td colspan="5" class="text-center py-8 text-gray-400">Loading…</td></tr>
             </tbody>
           </table>
+          </div>
         </div>
       </section>
 
       <!-- ── All Dept Grievances ─────────────────────────────────────────── -->
       <section id="view-all-grievances" class="view-section">
         <div class="glass-panel rounded-[2rem] p-8 bg-white min-h-[500px]">
-          <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
-            <h2 class="text-xl font-serif font-bold">All Department Grievances</h2>
-            <!-- Dept filter buttons -->
-            <div class="flex flex-wrap gap-2" id="dept-filter-buttons">
-              <button class="dept-filter-btn active px-4 py-2 text-xs font-bold rounded-full bg-black text-white" data-dept="all">All</button>
-              <button class="dept-filter-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200" data-dept="Academic Affairs">Academic Affairs</button>
-              <button class="dept-filter-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200" data-dept="Administration">Administration</button>
-              <button class="dept-filter-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200" data-dept="Facilities &amp; Infrastructure">Facilities</button>
-              <button class="dept-filter-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200" data-dept="IT &amp; Technical Support">IT Support</button>
-              <button class="dept-filter-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200" data-dept="Student Welfare &amp; Discipline">Student Welfare</button>
-            </div>
+          <div class="mb-6">
+            <h2 class="text-xl font-serif font-bold mb-4">All Department Grievances</h2>
+            <div class="flex flex-wrap items-center gap-4">
+              <!-- Search bar -->
+              <div class="relative w-full sm:w-80">
+                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+                <input
+                  id="input-search-all-cases"
+                  type="text"
+                  placeholder="Search by ID"
+                  class="w-full sm:w-80 pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 text-sm rounded-full outline-none focus:border-black transition"
+                />
+              </div>
+              <!-- Dept filter dropdown -->
+              <select id="dept-filter-select" class="bg-gray-50 border border-gray-200 text-sm rounded-full px-4 py-2 outline-none focus:border-black transition">
+                <option value="all">All Departments</option>
+                <option value="Academic Affairs">Academic Affairs</option>
+                <option value="Administration">Administration</option>
+                <option value="Facilities &amp; Infrastructure">Facilities &amp; Infrastructure</option>
+                <option value="IT &amp; Technical Support">IT &amp; Technical Support</option>
+                <option value="Student Welfare &amp; Discipline">Student Welfare &amp; Discipline</option>
+              </select>
           </div>
           <table class="w-full text-left text-sm text-gray-600">
             <thead

@@ -20,6 +20,7 @@ const SuperAdminApp = {
   currentAdminName: null,
   confirmCallback: null,
   escalatedFilterMode: "Escalated", // 'Escalated' | 'Resolved'
+  escalatedDeptFilter: "all",
   allGrievanceDeptFilter: "all",
 
   // ── Toast ─────────────────────────────────────────────────────────────────
@@ -187,17 +188,43 @@ const SuperAdminApp = {
       SuperAdminApp.loadEscalatedCases();
     });
 
-    // Bind dept filter buttons on All-Grievances view
-    document.querySelectorAll(".dept-filter-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".dept-filter-btn").forEach((b) => {
-          b.className = "dept-filter-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200";
-        });
-        btn.className = "dept-filter-btn active px-4 py-2 text-xs font-bold rounded-full bg-black text-white";
-        SuperAdminApp.allGrievanceDeptFilter = btn.dataset.dept;
+    // Bind dept filter dropdown on Escalated view
+    const deptSelectEscalated = document.getElementById("dept-filter-escalated-select");
+    if (deptSelectEscalated) {
+      deptSelectEscalated.addEventListener("change", (e) => {
+        SuperAdminApp.escalatedDeptFilter = e.target.value;
+        SuperAdminApp.loadEscalatedCases();
+      });
+    }
+
+    // Bind Case ID / Full search bar on Escalated view (debounced)
+    const searchInputEscalated = document.getElementById("input-search-escalated-cases");
+    if (searchInputEscalated) {
+      let debounceEsc;
+      searchInputEscalated.addEventListener("input", () => {
+        clearTimeout(debounceEsc);
+        debounceEsc = setTimeout(SuperAdminApp.loadEscalatedCases, 250);
+      });
+    }
+
+    // Bind dept filter dropdown on All-Grievances view
+    const deptSelect = document.getElementById("dept-filter-select");
+    if (deptSelect) {
+      deptSelect.addEventListener("change", (e) => {
+        SuperAdminApp.allGrievanceDeptFilter = e.target.value;
         SuperAdminApp.loadAllCases();
       });
-    });
+    }
+
+    // Bind Case ID / Full search bar (debounced)
+    const searchInput = document.getElementById("input-search-all-cases");
+    if (searchInput) {
+      let debounce;
+      searchInput.addEventListener("input", () => {
+        clearTimeout(debounce);
+        debounce = setTimeout(SuperAdminApp.loadAllCases, 250);
+      });
+    }
 
     // Bind Download Report
     document
@@ -355,13 +382,17 @@ const SuperAdminApp = {
   // ── Escalated Cases ───────────────────────────────────────────────────────
   loadEscalatedCases: async () => {
     const filterStatus = SuperAdminApp.escalatedFilterMode;
-    let result;
+    const filters = { status: filterStatus === "Escalated" ? "Escalated" : "Resolved" };
 
-    if (filterStatus === "Escalated") {
-      result = await API.getEscalatedCases();
-    } else {
-      result = await API.getAllCases({ status: "Resolved" });
+    if (SuperAdminApp.escalatedDeptFilter && SuperAdminApp.escalatedDeptFilter !== "all") {
+      filters.department = SuperAdminApp.escalatedDeptFilter;
     }
+    const searchEl = document.getElementById("input-search-escalated-cases");
+    if (searchEl && searchEl.value.trim()) {
+      filters.search = searchEl.value.trim();
+    }
+
+    const result = await API.getAllCases(filters);
 
     if (!result.success) return;
 
@@ -415,6 +446,10 @@ const SuperAdminApp = {
     const filters = {};
     if (SuperAdminApp.allGrievanceDeptFilter !== "all") {
       filters.department = SuperAdminApp.allGrievanceDeptFilter;
+    }
+    const searchEl = document.getElementById("input-search-all-cases");
+    if (searchEl && searchEl.value.trim()) {
+      filters.search = searchEl.value.trim();
     }
 
     const result = await API.getAllCases(filters);

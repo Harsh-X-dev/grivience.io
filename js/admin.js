@@ -155,6 +155,25 @@ const AdminApp = {
       .getElementById("select-filter-status")
       ?.addEventListener("change", AdminApp.loadDepartmentCases);
 
+    // Bind Case ID search bar (debounced)
+    const searchInput = document.getElementById("input-search-cases");
+    if (searchInput) {
+      let debounce;
+      searchInput.addEventListener("input", () => {
+        clearTimeout(debounce);
+        debounce = setTimeout(AdminApp.loadDepartmentCases, 250);
+      });
+    }
+
+    // Close actions dropdown on outside click
+    document.addEventListener("click", (e) => {
+      const wrapper = document.getElementById("actions-dropdown-wrapper");
+      const menu = document.getElementById("actions-menu");
+      if (menu && wrapper && !wrapper.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
+
     // Bind Download Report
     document
       .getElementById("btn-download-report")
@@ -190,10 +209,13 @@ const AdminApp = {
 
   loadDepartmentCases: async () => {
     const statusEl = document.getElementById("select-filter-status");
+    const searchEl = document.getElementById("input-search-cases");
 
     const filters = {};
     if (statusEl && statusEl.value !== "All Status")
       filters.status = statusEl.value;
+    if (searchEl && searchEl.value.trim())
+      filters.search = searchEl.value.trim();
 
     const result = await API.getDepartmentCases(filters);
     if (!result.success) {

@@ -294,9 +294,18 @@
           <div
             class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 pb-6 border-b border-gray-100"
           >
-            <div
-              class="flex items-center gap-3 w-full md:w-auto overflow-x-auto"
-            >
+            <div class="flex items-center gap-3 flex-wrap w-full md:w-auto">
+              <!-- Search by Case ID -->
+              <div class="relative">
+                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+                <input
+                  id="input-search-cases"
+                  type="text"
+                  placeholder="Search by Case ID..."
+                  class="pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 text-sm rounded-full outline-none focus:border-black focus:outline-none transition w-52"
+                />
+              </div>
+              <!-- Status filter -->
               <select
                 id="select-filter-status"
                 class="bg-gray-50 border border-gray-200 text-sm rounded-full px-4 py-2 focus:outline-none focus:border-black"
@@ -527,19 +536,28 @@
               <h3 class="font-bold text-sm uppercase text-gray-400 mb-4">
                 Quick Actions
               </h3>
-              <div class="space-y-3">
+              <!-- Actions dropdown -->
+              <div class="relative" id="actions-dropdown-wrapper">
                 <button
-                  id="btn-action-escalate"
-                  class="w-full py-3 rounded-xl border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition flex items-center justify-center gap-2"
+                  id="btn-actions-dropdown"
+                  class="w-full py-3 rounded-xl bg-black text-white text-sm font-bold hover:bg-gray-800 transition flex items-center justify-center gap-2"
+                  onclick="document.getElementById('actions-menu').classList.toggle('hidden')"
                 >
-                  ⚠ Escalate Case
+                  Actions
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <button
-                  id="btn-action-resolve"
-                  class="w-full py-3 rounded-xl bg-black text-white text-sm font-bold hover:scale-105 transition shadow-lg"
-                >
-                  Resolve & Close
-                </button>
+                <div id="actions-menu" class="hidden absolute z-10 mt-2 w-full bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden">
+                  <button
+                    id="btn-action-escalate"
+                    class="w-full px-4 py-3 text-left text-sm font-bold text-red-600 hover:bg-red-50 transition flex items-center gap-2"
+                    onclick="document.getElementById('actions-menu').classList.add('hidden')"
+                  >⚠ Escalate Case</button>
+                  <button
+                    id="btn-action-resolve"
+                    class="w-full px-4 py-3 text-left text-sm font-bold text-green-700 hover:bg-green-50 transition flex items-center gap-2"
+                    onclick="document.getElementById('actions-menu').classList.add('hidden')"
+                  >✓ Resolve &amp; Close</button>
+                </div>
               </div>
             </div>
           </div>

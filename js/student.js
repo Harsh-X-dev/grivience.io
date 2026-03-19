@@ -139,8 +139,18 @@ const StudentApp = {
     const caseFilter = document.getElementById("select-case-filter");
     if (caseFilter) {
       caseFilter.addEventListener("change", () =>
-        StudentApp.filterCases(caseFilter.value),
+        StudentApp.applyFilters(),
       );
+    }
+
+    // 10. Bind case ID search bar
+    const searchInput = document.getElementById("input-search-cases");
+    if (searchInput) {
+      let debounce;
+      searchInput.addEventListener("input", () => {
+        clearTimeout(debounce);
+        debounce = setTimeout(() => StudentApp.applyFilters(), 200);
+      });
     }
 
     document
@@ -595,6 +605,16 @@ const StudentApp = {
             </a>`;
       })
       .join("");
+  },
+
+  // Combined filter: status + search by case ID
+  applyFilters: () => {
+    const status = document.getElementById("select-case-filter")?.value || "All Status";
+    const query = (document.getElementById("input-search-cases")?.value || "").trim().toLowerCase();
+    let filtered = StudentApp.allCases;
+    if (status !== "All Status") filtered = filtered.filter((c) => c.status === status);
+    if (query) filtered = filtered.filter((c) => c.caseId.toLowerCase().includes(query));
+    StudentApp.renderCaseTable(filtered);
   },
 
   filterCases: (filterValue) => {
